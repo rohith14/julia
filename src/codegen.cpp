@@ -3873,7 +3873,7 @@ static Function *gen_jlcall_wrapper(jl_lambda_info_t *lam, Function *f, bool sre
     if (sret) {
         Type *llvm_retty = f->getFunctionType()->getParamType(0)->getContainedType(0);
         if (ret_needsroot)
-            result = emit_static_alloca(llvm_retty, jlretty, &ctx);
+            result = emit_rooted_static_alloca(llvm_retty, jlretty, &ctx);
         else
             result = emit_static_alloca(llvm_retty);//builder.CreateAlloca();
         args[idx] = result;
