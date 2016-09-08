@@ -106,6 +106,7 @@ function preexisting_floor(x::Float64)
 end
 @test preexisting_floor(4.2) ≈ 4.
 ir = sprint(io->code_llvm(io, preexisting_floor, Tuple{Float64}))
+@show ir
 @test contains(ir, "call double @julia_declared_floor") # shouldn't be inlined
 
 function doubly_declared2_trunc(x::Float64)
