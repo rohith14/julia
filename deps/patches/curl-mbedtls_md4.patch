@@ -1,0 +1,24 @@
+From 871084361c8bba97babee9635f255055e3c32441 Mon Sep 17 00:00:00 2001
+From: Tony Kelman <tony@kelman.net>
+Date: Fri, 9 Sep 2016 01:31:14 -0700
+Subject: [PATCH] Only try to call mbedtls_md4 if it's enabled
+
+otherwise this is an undefined reference in the default build of mbedtls
+https://github.com/ARMmbed/mbedtls/blob/mbedtls-2.3.0/include/mbedtls/config.h#L1901-L1911
+---
+ lib/curl_ntlm_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/curl_ntlm_core.c b/lib/curl_ntlm_core.c
+index 4b9da2c..0df508b 100644
+--- a/lib/curl_ntlm_core.c
++++ b/lib/curl_ntlm_core.c
+@@ -568,7 +568,7 @@ CURLcode Curl_ntlm_core_mk_nt_hash(struct Curl_easy *data,
+     gcry_md_write(MD4pw, pw, 2 * len);
+     memcpy (ntbuffer, gcry_md_read (MD4pw, 0), MD4_DIGEST_LENGTH);
+     gcry_md_close(MD4pw);
+-#elif defined(USE_MBEDTLS)
++#elif defined(USE_MBEDTLS) && defined(MBEDTLS_MD4_C)
+     mbedtls_md4(pw, 2 * len, ntbuffer);
+ #elif defined(USE_NSS) || defined(USE_OS400CRYPTO)
+     Curl_md4it(ntbuffer, pw, 2 * len);
